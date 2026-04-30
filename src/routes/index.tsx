@@ -10,7 +10,7 @@ import irlOccasion from "@/assets/irl-occasion.jpg";
 import irlCraft from "@/assets/irl-craft.jpg";
 import irlFlatlay from "@/assets/irl-flatlay.jpg";
 import storyAtelier from "@/assets/story-atelier.jpg";
-import { ArrowRight, Sparkles, ShieldCheck, Gem } from "lucide-react";
+import { ArrowRight, Sparkles, ShieldCheck, Gem, Pencil, Eye, Hammer, Check } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -147,6 +147,64 @@ function Index() {
           <div className="text-center mt-16">
             <Link to="/shop" className="btn-luxe">Shop All</Link>
           </div>
+        </div>
+      </section>
+
+      {/* CUSTOM DESIGN */}
+      <section className="py-24 md:py-32 bg-white border-y border-[var(--border)]">
+        <div className="max-w-6xl mx-auto px-6 lg:px-10">
+          <div className="text-center mb-16">
+            <p className="eyebrow mb-3">Design Your Own Jewelry</p>
+            <h2 className="font-serif text-5xl md:text-6xl mb-5 leading-[1.05]">
+              Your Vision. <em className="text-gold not-italic font-serif italic">Our Craftsmanship.</em>
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto font-light">
+              Have a design in mind? Share your idea, and our artisans will bring it to life with precision and care.
+            </p>
+            <div className="gold-divider w-24 mx-auto mt-8" />
+          </div>
+
+          {/* 3 STEPS */}
+          <div className="grid md:grid-cols-3 gap-10 md:gap-6 mb-20">
+            {[
+              { icon: Pencil, n: "01", title: "Share Your Idea", desc: "Upload a reference image, sketch, or describe your design." },
+              { icon: Eye, n: "02", title: "We Create a Preview", desc: "Our designers create a concept tailored to your vision." },
+              { icon: Hammer, n: "03", title: "Approve & Craft", desc: "Once approved, we craft your jewelry with premium materials." },
+            ].map((s) => (
+              <div key={s.n} className="text-center px-4 group">
+                <div className="relative inline-flex items-center justify-center w-20 h-20 mb-6 rounded-full border border-[var(--gold)]/40 group-hover:border-[var(--gold)] transition-colors">
+                  <s.icon className="h-7 w-7 text-teal" strokeWidth={1.25} />
+                  <span className="absolute -top-2 -right-2 text-[10px] tracking-[0.25em] text-gold bg-white px-2 py-0.5 border border-[var(--gold)]/30">
+                    {s.n}
+                  </span>
+                </div>
+                <h3 className="font-serif text-2xl mb-3">{s.title}</h3>
+                <p className="text-sm text-muted-foreground font-light leading-relaxed max-w-xs mx-auto">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* TRUST LINE */}
+          <div className="flex flex-wrap justify-center gap-x-10 gap-y-3 mb-12 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+            {["Handcrafted by experts", "Custom fit & finish", "Premium materials only"].map((t) => (
+              <span key={t} className="flex items-center gap-2">
+                <Check className="h-3 w-3 text-gold" strokeWidth={2} /> {t}
+              </span>
+            ))}
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+            <Link to="/contact" className="btn-luxe">Start Your Custom Design <ArrowRight className="h-3 w-3" /></Link>
+            <Link to="/contact" className="btn-ghost-luxe" style={{ color: "var(--charcoal)", borderColor: "var(--charcoal)" }}>Talk to Designer</Link>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground italic">
+            Not sure about the design? Our experts will guide you.
+          </p>
+          <p className="text-center mt-8 font-serif italic text-xl text-teal">
+            Made just for you. Nothing mass-produced.
+          </p>
         </div>
       </section>
 
