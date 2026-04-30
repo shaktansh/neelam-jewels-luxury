@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const { pathToFileURL } = require('url');
+import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 const mime = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
@@ -37,7 +37,7 @@ function applyResponse(res, response) {
   });
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Try to run the SSR server bundle first.
   try {
     const serverPath = path.join(process.cwd(), 'dist', 'server', 'index.js');
@@ -126,4 +126,4 @@ module.exports = async (req, res) => {
     res.statusCode = 500;
     res.end('Internal Server Error');
   }
-};
+}
