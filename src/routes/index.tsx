@@ -35,12 +35,14 @@ function Index() {
       {/* HERO */}
       <section className="relative h-screen min-h-[700px] overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src={heroImg}
-            alt="Woman wearing Neelam Jewels gold necklace and earrings"
-            width={1920}
-            height={1080}
-            className="w-full h-full object-cover ken-burns"
+          <video
+            src="/hero-video.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={heroImg}
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 hero-overlay" />
         </div>
@@ -54,12 +56,9 @@ function Index() {
           <h1 className="fade-up delay-200 font-serif text-[clamp(3.5rem,11vw,9rem)] leading-[0.95] mt-6 mb-2" style={{ color: "var(--ivory)" }}>
             Modern
           </h1>
-          <h1 className="fade-up delay-300 font-serif italic text-[clamp(3.5rem,11vw,9rem)] leading-[0.95] -mt-2 mb-8" style={{ color: "var(--gold-soft)" }}>
+          <h1 className="fade-up delay-300 font-serif italic text-[clamp(3.5rem,11vw,9rem)] leading-[0.95] -mt-2 mb-10" style={{ color: "var(--gold-soft)" }}>
             Heirlooms.
           </h1>
-          <p className="fade-up delay-300 max-w-md text-base md:text-lg opacity-90 mb-10 font-light" style={{ color: "var(--ivory)" }}>
-            Crafted for everyday elegance. Designed to last a lifetime — and the one after.
-          </p>
           <div className="fade-up delay-400 flex flex-col sm:flex-row gap-4">
             <Link to="/shop" className="btn-luxe">Shop Collection <ArrowRight className="h-3 w-3" /></Link>
             <Link to="/about" className="btn-ghost-luxe">Our Story</Link>
