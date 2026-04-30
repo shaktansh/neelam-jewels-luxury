@@ -1,6 +1,11 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/client",
+  "functions": {
+    "api/[[...route]].js": {
+      "includeFiles": "dist/server/**"
+    }
+  },
   "cleanUrls": false,
   "trailingSlash": false,
   "routes": [
