@@ -1,8 +1,10 @@
 import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { pathToFileURL } from 'url';
 
 const distClientDir = join(process.cwd(), 'dist', 'client');
 const assetsDir = join(distClientDir, 'assets');
+const serverEntry = join(process.cwd(), 'dist', 'server', 'index.js');
 const outHtml = join(distClientDir, 'index.html');
 
 function pickLargest(files) {
@@ -27,6 +29,23 @@ function pickLargest(files) {
 try {
   if (!existsSync(distClientDir)) {
     mkdirSync(distClientDir, { recursive: true });
+  }
+
+  // Preferred path: render once from built SSR entry and persist as static HTML.
+  if (existsSync(serverEntry)) {
+    const serverMod = await import(pathToFileURL(serverEntry).href);
+    const serverFetch = serverMod?.default?.fetch;
+
+    if (typeof serverFetch === 'function') {
+      const response = await serverFetch(new Request('http://localhost/'));
+      const html = await response.text();
+
+      if (response.ok && html.includes('<!DOCTYPE html>')) {
+        writeFileSync(outHtml, html, 'utf-8');
+        console.log('Generated index.html from SSR entry at', outHtml);
+        process.exit(0);
+      }
+    }
   }
 
   if (!existsSync(assetsDir)) {
