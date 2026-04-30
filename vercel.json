@@ -1,8 +1,13 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/public",
   "routes": [
-    { "handle": "filesystem" },
     {
-      "src": "/.*",
+      "src": "^/api/.*",
+      "dest": "/api"
+    },
+    {
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ]
