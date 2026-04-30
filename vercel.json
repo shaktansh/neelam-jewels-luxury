@@ -17,8 +17,8 @@
       }
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "^/(.*)$",
+      "dest": "/api/[[...route]].js"
     }
   ]
 }
