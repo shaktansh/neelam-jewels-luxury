@@ -1,21 +1,71 @@
-import { existsSync, mkdirSync, copyFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { existsSync, mkdirSync, readdirSync, statSync, writeFileSync } from 'fs';
+import { join } from 'path';
 
-const src = join(process.cwd(), 'index.html');
-const destDir = join(process.cwd(), 'dist', 'client');
-const dest = join(destDir, 'index.html');
+const distClientDir = join(process.cwd(), 'dist', 'client');
+const assetsDir = join(distClientDir, 'assets');
+const outHtml = join(distClientDir, 'index.html');
+
+function pickLargest(files) {
+  if (files.length === 0) {
+    return null;
+  }
+
+  let winner = files[0];
+  let winnerSize = statSync(join(assetsDir, winner)).size;
+
+  for (const file of files.slice(1)) {
+    const size = statSync(join(assetsDir, file)).size;
+    if (size > winnerSize) {
+      winner = file;
+      winnerSize = size;
+    }
+  }
+
+  return winner;
+}
 
 try {
-  if (!existsSync(src)) {
-    console.warn('No index.html at project root; skipping copy.');
-    process.exit(0);
+  if (!existsSync(distClientDir)) {
+    mkdirSync(distClientDir, { recursive: true });
   }
-  if (!existsSync(destDir)) {
-    mkdirSync(destDir, { recursive: true });
+
+  if (!existsSync(assetsDir)) {
+    throw new Error('dist/client/assets not found. Run build before postbuild.');
   }
-  copyFileSync(src, dest);
-  console.log('Copied index.html to', dest);
+
+  const files = readdirSync(assetsDir);
+  const jsCandidates = files.filter((f) => /^index-.*\.js$/.test(f));
+  const cssCandidates = files.filter((f) => /^styles-.*\.css$/.test(f));
+
+  const entryJs = pickLargest(jsCandidates);
+  const entryCss = pickLargest(cssCandidates);
+
+  if (!entryJs) {
+    throw new Error('Could not find built entry JS asset (index-*.js).');
+  }
+
+  const html = [
+    '<!doctype html>',
+    '<html lang="en">',
+    '  <head>',
+    '    <meta charset="UTF-8" />',
+    '    <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+    '    <title>Neelam Jewels Luxury</title>',
+    entryCss ? `    <link rel="stylesheet" href="/assets/${entryCss}" />` : '',
+    `    <script type="module" src="/assets/${entryJs}"></script>`,
+    '  </head>',
+    '  <body>',
+    '    <div id="root"></div>',
+    '  </body>',
+    '</html>',
+    '',
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  writeFileSync(outHtml, html, 'utf-8');
+  console.log('Generated production index.html at', outHtml);
 } catch (err) {
-  console.error('Failed to copy index.html:', err);
+  console.error('Failed to generate production index.html:', err);
   process.exit(1);
 }
