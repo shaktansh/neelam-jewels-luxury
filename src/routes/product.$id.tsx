@@ -114,3 +114,20 @@ function ProductPage() {
     </div>
   );
 }
+
+function ProductActions({ id }: { id: string }) {
+  const { addToCart, toggleWishlist, inWishlist } = useShop();
+  const wished = inWishlist(id);
+  return (
+    <div className="flex flex-col sm:flex-row gap-3 mb-10">
+      <button onClick={() => addToCart(id)} className="btn-luxe flex-1">Add to Cart</button>
+      <button
+        onClick={() => toggleWishlist(id)}
+        className={`border px-5 py-4 transition-colors flex items-center justify-center ${wished ? "border-[var(--gold)] text-gold bg-white" : "border-[var(--border)] hover:border-[var(--gold)] hover:text-gold"}`}
+        aria-label="Wishlist"
+      >
+        <Heart className={`h-4 w-4 ${wished ? "fill-[var(--gold)]" : ""}`} strokeWidth={1.5} />
+      </button>
+    </div>
+  );
+}
