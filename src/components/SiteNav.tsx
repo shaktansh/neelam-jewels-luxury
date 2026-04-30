@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { Heart, User, ShoppingBag } from "lucide-react";
+import { useShop } from "@/store/shop";
 
 export function SiteNav() {
+  const { setCartOpen, setWishlistOpen, cartCount, wishlist } = useShop();
   return (
     <header className="fixed top-4 left-4 right-4 z-50">
       <nav className="glass-nav rounded-full px-6 lg:px-10 py-4 flex items-center justify-between shadow-[0_8px_30px_-12px_rgba(31,58,95,0.18)]">
@@ -22,11 +24,18 @@ export function SiteNav() {
           <Link to="/shop" className="hover:text-gold transition-colors duration-300 hidden md:inline" style={{ color: "var(--charcoal)" }}>New Arrivals</Link>
           <Link to="/about" className="hover:text-gold transition-colors duration-300 hidden sm:inline" style={{ color: "var(--charcoal)" }}>About</Link>
           <div className="flex items-center gap-3 ml-1" style={{ color: "var(--charcoal)" }}>
-            <button aria-label="Wishlist" className="hover:text-gold transition-colors"><Heart className="h-4 w-4" strokeWidth={1.5} /></button>
+            <button onClick={() => setWishlistOpen(true)} aria-label="Wishlist" className="hover:text-gold transition-colors relative">
+              <Heart className="h-4 w-4" strokeWidth={1.5} />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[var(--gold)] text-[9px] text-charcoal rounded-full w-4 h-4 flex items-center justify-center font-medium">{wishlist.length}</span>
+              )}
+            </button>
             <button aria-label="Account" className="hover:text-gold transition-colors"><User className="h-4 w-4" strokeWidth={1.5} /></button>
-            <button aria-label="Cart" className="hover:text-gold transition-colors relative">
+            <button onClick={() => setCartOpen(true)} aria-label="Cart" className="hover:text-gold transition-colors relative">
               <ShoppingBag className="h-4 w-4" strokeWidth={1.5} />
-              <span className="absolute -top-2 -right-2 bg-[var(--gold)] text-[9px] text-charcoal rounded-full w-4 h-4 flex items-center justify-center font-medium">2</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[var(--gold)] text-[9px] text-charcoal rounded-full w-4 h-4 flex items-center justify-center font-medium">{cartCount}</span>
+              )}
             </button>
           </div>
         </div>

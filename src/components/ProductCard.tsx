@@ -1,8 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { type Product, formatINR } from "@/data/products";
 import { Heart } from "lucide-react";
+import { useShop } from "@/store/shop";
 
 export function ProductCard({ product }: { product: Product }) {
+  const { addToCart, toggleWishlist, inWishlist } = useShop();
+  const wished = inWishlist(product.id);
   return (
     <Link
       to="/product/$id"
@@ -18,14 +21,14 @@ export function ProductCard({ product }: { product: Product }) {
         />
         <button
           aria-label="Add to wishlist"
-          onClick={(e) => e.preventDefault()}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/80 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWishlist(product.id); }}
+          className={`absolute top-4 right-4 w-9 h-9 rounded-full backdrop-blur flex items-center justify-center transition-all duration-300 hover:bg-white ${wished ? "bg-white opacity-100" : "bg-white/80 opacity-0 group-hover:opacity-100"}`}
         >
-          <Heart className="h-4 w-4" strokeWidth={1.5} />
+          <Heart className={`h-4 w-4 ${wished ? "fill-[var(--gold)] text-[var(--gold)]" : ""}`} strokeWidth={1.5} />
         </button>
         <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
           <button
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); addToCart(product.id); }}
             className="w-full bg-charcoal text-ivory text-[11px] uppercase tracking-[0.25em] py-3 hover:bg-[var(--gold)] hover:text-charcoal transition-colors duration-300"
             style={{ background: "var(--charcoal)", color: "var(--ivory)" }}
           >
