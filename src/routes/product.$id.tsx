@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
 import { getProduct, products, formatINR } from "@/data/products";
 import { ShieldCheck, Sparkles, Truck, RotateCw, Heart } from "lucide-react";
+import { useShop } from "@/store/shop";
 
 export const Route = createFileRoute("/product/$id")({
   loader: ({ params }) => {
@@ -69,12 +70,8 @@ function ProductPage() {
               {product.description}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 mb-10">
-              <button className="btn-luxe flex-1">Add to Cart</button>
-              <button className="border border-[var(--border)] px-5 py-4 hover:border-[var(--gold)] hover:text-gold transition-colors flex items-center justify-center" aria-label="Wishlist">
-                <Heart className="h-4 w-4" strokeWidth={1.5} />
-              </button>
-            </div>
+            <ProductActions id={product.id} />
+
 
             <div className="border-t border-[var(--border)] pt-8 mb-8">
               <h3 className="text-[11px] uppercase tracking-[0.3em] text-gold mb-4">Material & Craft</h3>
