@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { pathToFileURL } = require('url');
 const mime = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'application/javascript; charset=utf-8',
@@ -14,37 +15,65 @@ const mime = {
   '.ico': 'image/x-icon'
 };
 
+async function readRequestBody(req) {
+  if (['GET', 'HEAD'].includes(req.method || 'GET')) {
+    return undefined;
+  }
+
+  const chunks = [];
+  for await (const chunk of req) {
+    chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  }
+  if (chunks.length === 0) {
+    return undefined;
+  }
+  return Buffer.concat(chunks);
+}
+
+function applyResponse(res, response) {
+  res.statusCode = response.status || 200;
+  response.headers.forEach((value, key) => {
+    res.setHeader(key, value);
+  });
+}
+
 module.exports = async (req, res) => {
-  // First try to run the server bundle (SSR) if available
+  // Try to run the SSR server bundle first.
   try {
     const serverPath = path.join(process.cwd(), 'dist', 'server', 'index.js');
     if (fs.existsSync(serverPath)) {
-      const serverModule = require(serverPath);
-      const serverHandler = serverModule && (serverModule.default || serverModule);
+      const serverUrl = pathToFileURL(serverPath).href;
+      const serverModule = await import(serverUrl);
+
+      const serverHandler =
+        serverModule?.default?.fetch ||
+        serverModule?.default ||
+        serverModule?.fetch;
 
       if (typeof serverHandler === 'function') {
         try {
           const protocol = req.headers['x-forwarded-proto'] || 'https';
           const host = req.headers.host || 'localhost';
           const url = `${protocol}://${host}${req.url}`;
+          const body = await readRequestBody(req);
 
-          // Node 18+ provides global Request/Response
           const request = new Request(url, {
             method: req.method,
             headers: req.headers,
-            body: ['GET', 'HEAD'].includes(req.method) ? undefined : req,
+            body,
           });
 
           const response = await serverHandler(request);
+          if (!(response instanceof Response)) {
+            throw new Error('SSR handler did not return a Response object');
+          }
 
-          // Map Response to Vercel res
-          res.statusCode = response.status || 200;
-          response.headers.forEach((v, k) => res.setHeader(k, v));
+          applyResponse(res, response);
 
-          const body = await response.arrayBuffer();
-          return res.end(Buffer.from(body));
+          const responseBody = await response.arrayBuffer();
+          return res.end(Buffer.from(responseBody));
         } catch (err) {
-          console.error('SSR handler error, falling back to static:', err);
+          console.error('SSR handler error:', err);
           // fall through to static serving
         }
       }
@@ -53,24 +82,26 @@ module.exports = async (req, res) => {
     console.error('Error loading server bundle:', err);
   }
 
-  // Fallback: serve static files from dist/client (SPA)
+  // Fallback: serve static files from dist/client.
   try {
     const urlPath = decodeURIComponent(req.url.split('?')[0]);
     const cleanPath = urlPath.replace(/^\//, '');
     const base = path.join(process.cwd(), 'dist', 'client');
 
     const hasExt = path.extname(cleanPath) !== '';
-    const candidate = hasExt ? path.join(base, cleanPath) : path.join(base, cleanPath || 'index.html');
+    const candidate = hasExt ? path.join(base, cleanPath) : path.join(base, cleanPath || '');
 
     let filePath = candidate;
-    if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(base, 'index.html');
-    }
+    if (!fs.existsSync(filePath) || (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory())) {
+      if (hasExt) {
+        res.statusCode = 404;
+        res.setHeader('content-type', 'text/plain; charset=utf-8');
+        return res.end('Not Found');
+      }
 
-    if (!fs.existsSync(filePath)) {
-      res.statusCode = 404;
+      res.statusCode = 500;
       res.setHeader('content-type', 'text/plain; charset=utf-8');
-      return res.end('Not Found');
+      return res.end('SSR failed and no static fallback route was found.');
     }
 
     const ext = path.extname(filePath).toLowerCase();
