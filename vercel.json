@@ -1,10 +1,25 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/client",
-  "rewrites": [
+  "public": "dist/client",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "^/assets/.*",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/.*\\.[^/]*$",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
