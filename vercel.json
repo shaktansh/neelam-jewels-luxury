@@ -1,24 +1,32 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/client",
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
-  "routes": [
+  "headers": [
     {
-      "src": "^/assets/.*",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
-      "src": "^/.*\\.[^/]*$",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
-      }
-    },
+      "source": "/(.*\\.(js|css|png|jpg|jpeg|webp|svg|ico|mp4))",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
     {
-      "src": "^/(.*)$",
-      "dest": "/api/[[...route]].js"
+      "source": "/((?!assets/|.*\\..*).*)",
+      "destination": "/index.html"
     }
   ]
 }
