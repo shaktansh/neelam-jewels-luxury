@@ -61,6 +61,16 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { ShopProvider } from "@/store/shop";
+import { CartDrawer } from "@/components/CartDrawer";
+import { WishlistDrawer } from "@/components/WishlistDrawer";
+
 function RootComponent() {
-  return <Outlet />;
+  return (
+    <ShopProvider>
+      <Outlet />
+      <CartDrawer />
+      <WishlistDrawer />
+    </ShopProvider>
+  );
 }

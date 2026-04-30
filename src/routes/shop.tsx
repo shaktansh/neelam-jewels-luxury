@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
@@ -16,8 +17,13 @@ export const Route = createFileRoute("/shop")({
   component: Shop,
 });
 
+const categories = ["All", "Earrings", "Necklaces", "Sets"] as const;
+type Cat = typeof categories[number];
+
 function Shop() {
-  const categories = ["All", "Earrings", "Necklaces", "Sets"];
+  const [active, setActive] = useState<Cat>("All");
+  const filtered = active === "All" ? products : products.filter((p) => p.category === active);
+
   return (
     <div className="min-h-screen">
       <SiteNav />
@@ -28,17 +34,25 @@ function Shop() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 mb-12 flex flex-wrap justify-center gap-3 md:gap-6 text-[11px] uppercase tracking-[0.25em]">
-        {categories.map((c, i) => (
-          <button key={c} className={`px-5 py-2 border transition-colors ${i === 0 ? "border-[var(--charcoal)] bg-[var(--charcoal)] text-[var(--ivory)]" : "border-[var(--border)] hover:border-[var(--gold)] hover:text-gold"}`}>
+        {categories.map((c) => (
+          <button
+            key={c}
+            onClick={() => setActive(c)}
+            className={`px-5 py-2 border transition-colors ${active === c ? "border-[var(--charcoal)] bg-[var(--charcoal)] text-[var(--ivory)]" : "border-[var(--border)] hover:border-[var(--gold)] hover:text-gold"}`}
+          >
             {c}
           </button>
         ))}
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-10 pb-24">
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-14">
-          {products.map((p) => <ProductCard key={p.id} product={p} />)}
-        </div>
+        {filtered.length === 0 ? (
+          <p className="text-center text-muted-foreground py-20">No pieces in this category yet.</p>
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-14">
+            {filtered.map((p) => <ProductCard key={p.id} product={p} />)}
+          </div>
+        )}
       </div>
       <SiteFooter />
     </div>
