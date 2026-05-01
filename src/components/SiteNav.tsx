@@ -14,7 +14,7 @@ export function SiteNav() {
         </div>
 
         <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center group">
-          <span className="font-serif text-xl md:text-2xl tracking-[0.35em] text-teal whitespace-nowrap">
+          <span className="font-serif text-sm sm:text-lg md:text-2xl tracking-[0.25em] sm:tracking-[0.35em] text-teal whitespace-nowrap">
             NEELAM <span className="text-gold">JEWELS</span>
           </span>
           <span className="text-[8px] tracking-[0.4em] text-muted-foreground mt-0.5 hidden md:block">EST. JAIPUR</span>
