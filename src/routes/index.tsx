@@ -33,7 +33,7 @@ function Index() {
       <SiteNav />
 
       {/* HERO */}
-      <section className="relative h-screen min-h-[700px] overflow-hidden">
+      <section className="relative h-[88svh] min-h-[560px] md:min-h-[700px] overflow-hidden">
         <div className="absolute inset-0">
           <video
             src="/hero-video.mp4"
