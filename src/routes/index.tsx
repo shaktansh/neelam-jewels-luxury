@@ -194,9 +194,13 @@ function Index() {
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-            <Link to="/contact" className="btn-luxe">Start Your Custom Design <ArrowRight className="h-3 w-3" /></Link>
-            <Link to="/contact" className="btn-ghost-luxe" style={{ color: "var(--charcoal)", borderColor: "var(--charcoal)" }}>Talk to Designer</Link>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 px-4">
+            <a href="https://wa.me/919799557771?text=Hi%20Neelam%20Jewels%2C%20I%27d%20like%20to%20start%20a%20custom%20jewelry%20design." target="_blank" rel="noopener noreferrer" className="btn-luxe justify-center">
+              Start Your Custom Design <ArrowRight className="h-3 w-3" />
+            </a>
+            <a href="https://wa.me/919799557771?text=Hi%2C%20I%27d%20like%20to%20speak%20with%20a%20designer%20at%20Neelam%20Jewels." target="_blank" rel="noopener noreferrer" className="btn-ghost-luxe justify-center" style={{ color: "var(--charcoal)", borderColor: "var(--charcoal)" }}>
+              Talk to Designer
+            </a>
           </div>
 
           <p className="text-center text-xs text-muted-foreground italic">
