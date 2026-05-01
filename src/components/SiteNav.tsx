@@ -5,8 +5,8 @@ import { useShop } from "@/store/shop";
 export function SiteNav() {
   const { setCartOpen, setWishlistOpen, cartCount, wishlist } = useShop();
   return (
-    <header className="fixed top-4 left-4 right-4 z-50">
-      <nav className="glass-nav rounded-full px-6 lg:px-10 py-4 flex items-center justify-between shadow-[0_8px_30px_-12px_rgba(31,58,95,0.18)]">
+    <header className="fixed top-3 left-3 right-3 md:top-4 md:left-4 md:right-4 z-50">
+      <nav className="glass-nav rounded-full px-4 sm:px-6 lg:px-10 py-3 md:py-4 flex items-center justify-between shadow-[0_8px_30px_-12px_rgba(31,58,95,0.18)]">
         <div className="flex items-center gap-7 text-[11px] uppercase tracking-[0.25em] font-medium text-charcoal">
           <Link to="/" className="hover:text-gold transition-colors duration-300" style={{ color: "var(--charcoal)" }}>Home</Link>
           <Link to="/shop" className="hover:text-gold transition-colors duration-300 hidden sm:inline" style={{ color: "var(--charcoal)" }}>Shop</Link>
